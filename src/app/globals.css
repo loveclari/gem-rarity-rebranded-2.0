@@ -1,0 +1,478 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #e7eef6;
+    --foreground: #1c1c1c;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: minmax(100vh, max-content);
+  align-items: stretch;
+  min-height: 100vh;
+}
+
+#grid > * {
+  min-width: 0;
+}
+
+/* Essential accordion functionality only */
+.accordion {
+  min-width: 0;
+  overflow-x: hidden;
+  padding-bottom: 92px;
+}
+
+.accordion-section {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.accordion .content.open {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0;
+  width: 100%;
+  overflow: visible;
+}
+
+.accordion .content {
+  display: none;
+}
+
+.accordion .header {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  appearance: none;
+  background: #fff;
+}
+
+.header .fa-check {
+  float: none;
+}
+
+.header.active .fa-check {
+  opacity: 1;
+}
+
+.header .shape-name {
+  font-weight: 800;
+}
+
+.header .gem-shape {
+  margin-left: auto;
+  float: none;
+  font-weight: 200;
+  color: #222;
+}
+
+.header .fa-info-circle {
+  display: none;
+}
+
+.carousel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 6px 0 2px;
+}
+
+.carousel-stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 128px;
+  perspective: 900px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.carousel-stage.is-dragging {
+  cursor: grabbing;
+}
+
+.carousel-slot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: var(--z);
+  transform: translate(-50%, -50%)
+    translateX(calc(var(--offset) * 60px))
+    rotateY(calc(var(--offset) * -8deg))
+    scale(var(--scale));
+  transform-style: preserve-3d;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  opacity: 1;
+}
+
+.carousel-slot.is-far {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.carousel-nav {
+  flex: 0 0 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  color: #3b84c2;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.12);
+  cursor: pointer;
+  z-index: 30;
+}
+
+.carousel-nav:hover {
+  background: #3b84c2;
+  color: #fff;
+}
+
+.carousel-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 80px;
+  padding: 6px 4px 4px;
+  border: 3px solid transparent;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.08);
+  appearance: none;
+}
+
+.carousel-slot.is-center .carousel-card {
+  width: 68px;
+  height: 96px;
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.14);
+}
+
+.carousel-card img {
+  margin: 0 !important;
+  align-self: center !important;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+}
+
+.carousel-card.has-label {
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.carousel-card.has-label img {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+}
+
+.carousel-slot.is-center .carousel-card.has-label img {
+  width: 32px;
+  height: 32px;
+  flex-basis: 32px;
+}
+
+.carousel-card__label {
+  flex: 0 0 auto;
+  width: 100%;
+  padding: 3px 0 0;
+  font-size: 10px;
+  font-weight: 700;
+  color: #222;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.carousel-card.selected {
+  border-color: #3b84c2;
+  background: #f2faff;
+}
+
+/* Description text styling - simple and below */
+.description-text {
+  margin-top: 15px;
+  padding: 0 28px 18px;
+  text-align: center;
+}
+
+.description-text p {
+  margin: 0 auto;
+  max-width: 36em;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.clear-button {
+  padding: 16px 24px 8px;
+}
+
+.clear-button button {
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 20px;
+  background: #3b84c2;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgb(59 132 194 / 0.35);
+}
+
+.clear-button button:hover {
+  background: #2f6ea6;
+}
+
+.main {
+  min-height: 100%;
+  height: 100%;
+  align-self: stretch;
+  overflow: hidden;
+}
+
+.hero-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-stage .big-diamond-blink {
+  flex: 0 0 clamp(240px, 32vw, 400px);
+  width: clamp(240px, 32vw, 400px);
+  height: clamp(240px, 32vw, 400px);
+  max-width: 400px;
+  max-height: 400px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.footnote-main {
+  position: relative;
+  z-index: 3;
+  flex: 0 0 156px;
+  height: 156px;
+  min-height: 156px;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 12px 24px 24px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.footnote-main .diamond-img {
+  display: none;
+}
+
+.main .diamond-text {
+  margin-left: clamp(72px, 10vw, 120px);
+  max-width: calc(100% - 6rem);
+  min-width: 0;
+  min-height: 72px;
+}
+
+.footnote-main .make-select {
+  font-size: clamp(16px, 2.2vw, 28px);
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.main .slidecontainer {
+  opacity: 1;
+  max-width: 260px;
+  min-height: 88px;
+  margin-right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.main .slidecontainer > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.main .range-paragraph {
+  margin: 0;
+}
+
+.main .rare-data {
+  height: auto;
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -0.4px;
+  text-align: right;
+  line-height: 1.2;
+}
+
+.main .slidecontainer .description {
+  max-width: 240px;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.ai-analysis-section {
+  margin: 24px 16px 12px;
+  padding: 16px;
+  background: #f7f9fc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.accordion .footnote {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  width: 33.333%;
+  padding: 12px 24px 16px;
+  background: #fff;
+  box-shadow: 0 -8px 16px rgb(255 255 255 / 0.9);
+}
+
+@media screen and (max-width: 768px) {
+  .main {
+    height: auto;
+    overflow: visible;
+  }
+
+  .hero-stage {
+    flex: 0 0 auto;
+    min-height: 220px;
+  }
+
+  .big-diamond-blink {
+    width: clamp(180px, 56vw, 260px);
+    height: clamp(180px, 56vw, 260px);
+  }
+
+  .footnote-main {
+    flex: 0 0 auto;
+    height: auto;
+    min-height: 132px;
+    overflow: visible;
+  }
+
+  .accordion .footnote {
+    left: 0;
+    width: 100%;
+  }
+}
+
+.ai-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ai-shape {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex: 0 0 40px;
+}
+
+.ai-header h3 {
+  margin: 0;
+  flex: 1;
+  color: #222;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.ai-button {
+  background: #3b84c2;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.ai-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ai-error,
+.ai-result {
+  margin-top: 14px;
+}
+
+.ai-error {
+  color: #721c24;
+  background: #f8d7da;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.ai-result p {
+  margin: 0 0 10px;
+  color: #444;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Info text positioning */
+.info {
+  margin-top: 20px;
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+} 
