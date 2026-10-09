@@ -13,6 +13,8 @@ function getClient() {
 export async function getChatCompletion(
   messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
   model = 'gpt-4o-mini',
+  maxTokens = 1000,
+  temperature = 0.7,
 ) {
   const openai = getClient();
 
@@ -20,8 +22,8 @@ export async function getChatCompletion(
     const completion = await openai.chat.completions.create({
       model,
       messages,
-      max_tokens: 1000,
-      temperature: 0.7,
+      max_tokens: maxTokens,
+      temperature,
     });
 
     return completion.choices[0]?.message?.content || '';
@@ -39,6 +41,7 @@ export async function getDiamondRecommendation(
   clarity: string,
   color: string,
   cut: string,
+  rarity: { percentage: string; ratio: string; description: string },
 ) {
   const prompt = `A customer picked this diamond:
 - Shape: ${shape}
@@ -47,19 +50,29 @@ export async function getDiamondRecommendation(
 - Color: ${color}
 - Cut: ${cut}
 
-Write 4 or 5 very short sentences. Use easy words. No jargon. Explain what each grade means in plain language, then say if this mix is common or rare and if it may cost more or less.`;
+A count of graded diamonds produced this result. Use these facts as given:
+- Share of diamonds with this specification: ${rarity.percentage}
+- How rare it is: ${rarity.ratio}
+- Summary: ${rarity.description}
 
-  return getChatCompletion([
-    {
-      role: 'system',
-      content:
-        'You explain diamonds to first-time buyers. Use short, simple sentences. Avoid trade terms unless you say what they mean in everyday words.',
-    },
-    {
-      role: 'user',
-      content: prompt,
-    },
-  ]);
+Explain that result in 2 or 3 very short sentences. Use easy words. Keep the numbers and the rarity level the same. Do not explain what each grade means.`;
+
+  return getChatCompletion(
+    [
+      {
+        role: 'system',
+        content:
+          'You explain a diamond rarity result to a first-time buyer. Use the numbers you are given. Do not invent a different rarity.',
+      },
+      {
+        role: 'user',
+        content: prompt,
+      },
+    ],
+    'gpt-4o-mini',
+    150,
+    0.3,
+  );
 }
 
 export async function getDiamondDescription(attribute: string, value: string) {

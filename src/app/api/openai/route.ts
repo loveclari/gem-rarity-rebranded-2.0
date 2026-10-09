@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDiamondRecommendation, getDiamondDescription } from '@/lib/openai';
-import { getLocalDiamondAnalysis } from '@/lib/local-analysis';
+import { formatRarityFacts, getLocalDiamondAnalysis } from '@/lib/local-analysis';
+import { calculateRarity } from '@/lib/rarity';
 
 function isBillingError(message: string) {
   const text = message.toLowerCase();
@@ -21,11 +22,25 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'recommendation': {
         const { shape, carat, clarity, color, cut } = data;
-        try {
-          result = await getDiamondRecommendation(shape, carat, clarity, color, cut);
-        } catch {
-          result = getLocalDiamondAnalysis(shape, carat, clarity, color, cut);
+        const grades = getLocalDiamondAnalysis(shape, carat, clarity, color, cut);
+        const rarity = calculateRarity(shape, carat, clarity, color, cut);
+        let rarityText = rarity ? formatRarityFacts(rarity) : '';
+        if (rarity) {
+          try {
+            const explained = await getDiamondRecommendation(
+              shape,
+              carat,
+              clarity,
+              color,
+              cut,
+              rarity,
+            );
+            if (explained.trim()) rarityText = explained.trim();
+          } catch {
+            // Keep the calculated sentence when the model is unavailable.
+          }
         }
+        result = [grades, rarityText].filter(Boolean).join('\n\n');
         break;
       }
       case 'description':

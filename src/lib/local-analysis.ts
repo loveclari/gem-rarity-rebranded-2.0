@@ -54,18 +54,18 @@ export function getLocalDiamondAnalysis(
   color: string,
   cut: string,
 ) {
-  const isTop =
-    ['D', 'E', 'F'].includes(color) &&
-    ['FL', 'IF', 'VVS1', 'VVS2', 'VS1'].includes(clarity) &&
-    cut === 'Excellent';
-
   return [
     `This is a ${shape} diamond. ${sizePlain(carat)}`,
     colorPlain(color),
     clarityPlain(clarity),
     cutPlain(cut),
-    isTop
-      ? 'These grades together are special. Stones like this often cost more.'
-      : 'This mix can be a good choice if you want a nice look without the highest price.',
   ].join('\n\n');
+}
+
+export function formatRarityFacts(rarity: {
+  percentage: string;
+  ratio: string;
+  description: string;
+}) {
+  return `${rarity.description} About ${rarity.ratio} diamonds in the data match these grades. That is ${rarity.percentage} of the diamonds we counted.`;
 }
