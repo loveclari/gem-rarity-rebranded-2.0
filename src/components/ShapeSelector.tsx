@@ -50,9 +50,7 @@ export default function ShapeSelector({
               image={`/img/${shape.id}.png`}
               showLabel
               selected={selectedShape === shape.id}
-              onClick={() =>
-                onShapeSelect(selectedShape === shape.id ? '' : shape.id)
-              }
+              onClick={() => onShapeSelect(selectedShape === shape.id ? '' : shape.id)}
             />
           ))}
         </CardCarousel>

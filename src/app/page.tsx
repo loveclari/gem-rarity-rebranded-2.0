@@ -146,8 +146,13 @@ export default function Home() {
             {rarityResult ? (
               <>
                 <p className="kicker rarity-label">Rarity</p>
-                <p className="ratio">{rarityResult.ratio}</p>
-                <p className="rarity-note">{rarityResult.description}</p>
+                <p className="ratio">{rarityResult.percentage}</p>
+                <p className="rarity-note">
+                  of diamonds graded by GIA match this selection.
+                </p>
+                <p className="rarity-note">
+                  {rarityResult.ratio}. {rarityResult.description}
+                </p>
               </>
             ) : (
               <p className="rarity-note">Rarity appears as you choose each value.</p>
